@@ -1,0 +1,33 @@
+import { isRouteErrorResponse, useRouteError } from "react-router-dom";
+
+export default function Error() {
+  const error = useRouteError();
+
+  let errorMessage: string;
+
+  if (isRouteErrorResponse(error)) {
+    // error is type `ErrorResponse`
+    errorMessage = error.error?.message || error.statusText;
+  } else if (typeof error === "string") {
+    errorMessage = error;
+  } else {
+    console.error(error);
+    errorMessage = "Unknown error";
+  }
+
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <div className="min-w-[25rem] rounded-md border p-6 shadow-md">
+        <h1 className="mb-2 text-2xl font-medium text-red-500">Opps!</h1>
+
+        <p className="mb-4 text-gray-700">
+          Sorry, an unexpected error has occured!
+        </p>
+
+        <p className="text-gray-700">
+          <em>{errorMessage}</em>
+        </p>
+      </div>
+    </div>
+  );
+}

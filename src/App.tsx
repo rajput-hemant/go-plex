@@ -1,16 +1,39 @@
-import { Link, Outlet } from "react-router-dom";
+import { useState } from "react";
+import { AlertCircle } from "lucide-react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+
+import { Alert, AlertDescription, AlertTitle } from "./components/ui";
+import { cn } from "./lib/utils";
+import type { Alert as AlertType } from "./types/outlet-context";
 
 function App() {
+  const navigate = useNavigate();
+
+  const [jwtToken, setJwtToken] = useState<string | null>(null);
+  const [alert, setAlert] = useState<AlertType | null>(null);
+
+  const LoginLogoutEl = jwtToken ? "button" : Link;
+
+  const logout = () => {
+    setJwtToken(null);
+    navigate("/login");
+  };
+
   return (
     <div className="container mx-auto">
       <div className="flex items-center justify-between p-4">
         <h1 className="text-3xl font-bold">Go Watch a Movie!</h1>
 
-        <Link to="/login">
-          <span className="rounded-md bg-green-400 px-4 py-2 font-semibold text-white hover:bg-green-500">
-            Login
+        <LoginLogoutEl to={jwtToken ? "#!" : "/login"} onClick={logout}>
+          <span
+            className={cn(
+              "rounded-3xl bg-green-500 px-5 py-2 font-semibold text-white hover:bg-green-600",
+              jwtToken && "bg-red-500 hover:bg-red-600"
+            )}
+          >
+            {jwtToken ? "Logout" : "Login"}
           </span>
-        </Link>
+        </LoginLogoutEl>
       </div>
 
       <hr className="mb-3" />
@@ -26,32 +49,50 @@ function App() {
               Movies
             </Link>
 
-            <Link to="/genres" className="border-b px-4 py-2 hover:bg-gray-100">
+            <Link
+              to="/genres"
+              className={cn(
+                "px-4 py-2 hover:bg-gray-100",
+                jwtToken && "border-b"
+              )}
+            >
               Genres
             </Link>
 
-            <Link
-              to="/admin/movie/0"
-              className="border-b px-4 py-2 hover:bg-gray-100"
-            >
-              Add Movie
-            </Link>
+            {jwtToken && (
+              <>
+                <Link
+                  to="/admin/movie/0"
+                  className="border-b px-4 py-2 hover:bg-gray-100"
+                >
+                  Add Movie
+                </Link>
 
-            <Link
-              to="/manage-catalogue"
-              className="border-b px-4 py-2 hover:bg-gray-100"
-            >
-              Manage Catalogue
-            </Link>
+                <Link
+                  to="/manage-catalogue"
+                  className="border-b px-4 py-2 hover:bg-gray-100"
+                >
+                  Manage Catalogue
+                </Link>
 
-            <Link to="/graphql" className="px-4 py-2 hover:bg-gray-100">
-              GraphQL
-            </Link>
+                <Link to="/graphql" className="px-4 py-2 hover:bg-gray-100">
+                  GraphQL
+                </Link>
+              </>
+            )}
           </nav>
         </div>
 
         <div className="w-3/4 px-4">
-          <Outlet />
+          {alert && (
+            <Alert variant={alert?.variant} className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>{alert?.title}</AlertTitle>
+              <AlertDescription>{alert?.description} </AlertDescription>
+            </Alert>
+          )}
+
+          <Outlet context={{ jwtToken, setJwtToken, setAlert }} />
         </div>
       </div>
     </div>

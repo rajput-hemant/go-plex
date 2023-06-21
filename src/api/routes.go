@@ -10,6 +10,7 @@ import (
 func (app *application) routes() http.Handler {
 	// create a router mux
 	mux := chi.NewRouter()
+	mux.Use(app.enableCORS)
 
 	mux.Use(middleware.Recoverer)
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import useSwr from "swr";
 
 import { Movie } from "@/types/movie";
 import {
@@ -11,31 +11,15 @@ import {
   TableRow,
 } from "@/components/ui";
 
+const getMovies = async () => {
+  const response = await fetch("http://localhost:8080/movies");
+  const data: Movie[] = await response.json();
+
+  return data;
+};
+
 const Movies = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-
-  useEffect(() => {
-    const movieList = [
-      {
-        id: 1,
-        title: "The Shawshank Redemption",
-        release_date: "1994-09-14",
-        runtime: 144,
-        mpaa_rating: "R",
-        description: "Some long description",
-      },
-      {
-        id: 2,
-        title: "The Godfather",
-        release_date: "1972-03-14",
-        runtime: 144,
-        mpaa_rating: "R",
-        description: "Some long description",
-      },
-    ];
-
-    setMovies(movieList);
-  }, []);
+  const { data: movies } = useSwr("/movies", getMovies);
 
   return (
     <div className="">
@@ -45,17 +29,19 @@ const Movies = () => {
 
       <Table>
         <TableHeader>
-          <TableHead>Movie</TableHead>
-          <TableHead>Release Date</TableHead>
-          <TableHead>Rating</TableHead>
+          <TableRow>
+            <TableHead>Movie</TableHead>
+            <TableHead>Release Date</TableHead>
+            <TableHead>Rating</TableHead>
+          </TableRow>
         </TableHeader>
 
         <TableBody>
-          {movies.map((movie) => (
+          {movies?.map((movie) => (
             <TableRow key={movie.id}>
-              <Link to={`/movies/${movie.id}`}>
-                <TableCell>{movie.title}</TableCell>
-              </Link>
+              <TableCell>
+                <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+              </TableCell>
               <TableCell>{movie.release_date}</TableCell>
               <TableCell>{movie.mpaa_rating}</TableCell>
             </TableRow>

@@ -2,11 +2,12 @@
   "name": "go-plex",
   "private": true,
   "version": "0.1.0",
+  "proxy": "http://localhost:8080",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "serve": "vite preview",
-    "preview": "tsc && vite build && vite preview",
+    "dev": "vite & cd ./src/api && go build && ./api",
+    "build": "tsc && vite build & cd ./src/api && go build",
+    "serve": "vite preview & cd ./src/api && go build && ./api",
+    "preview": "tsc && vite build && vite preview & cd ./src/api && go build && ./api",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "fmt:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
@@ -14,12 +15,13 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "clsx": "^1.2.1",
     "class-variance-authority": "^0.6.0",
+    "clsx": "^1.2.1",
     "lucide-react": "^0.244.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.12.1",
+    "swr": "^2.1.5",
     "tailwind-merge": "^1.12.0"
   },
   "devDependencies": {

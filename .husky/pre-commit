@@ -3,3 +3,4 @@
 
 npx lint-staged
 
+go fmt ./src/api/...

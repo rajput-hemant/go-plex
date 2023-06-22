@@ -1,9 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
+	"go-plex/internals/repository"
+	"go-plex/internals/repository/dbrepo"
 	"log"
 	"net/http"
 )
@@ -13,7 +14,8 @@ const port = 8080
 type application struct {
 	Domain string
 	DSN    string
-	DB     *sql.DB
+	// DB     *sql.DB
+	DB repository.DatabaseRepo
 }
 
 func main() {
@@ -29,7 +31,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	app.DB = conn
+	// app.DB = conn
+	// defer app.DB.Close() // close db connection when main exits
+	app.DB = &dbrepo.PostgresDBRepo{DB: conn}
+	defer app.DB.Connection().Close()
 
 	app.Domain = "http://localhost:8080"
 

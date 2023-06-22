@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import type { Movie } from "@/types/movie";
+import type { Movie as Movietype } from "@/types/movie";
 
 const Movie = () => {
   const { id } = useParams();
 
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [movie, setMovie] = useState<Movietype | null>(null);
 
   useEffect(() => {
     const movie = {

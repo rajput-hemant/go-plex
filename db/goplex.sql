@@ -240,7 +240,7 @@ VALUES (
     'Admin',
     'User',
     'admin@example.com',
-    'a/.Gauq/GjOIEHpyh2DAMmso1wy',
+    '$2a$12$1XixfB4rG4RyPZNbU0opWu0wvD9vk0DJmLuKH0bMY0T.fQeYXbjYW',
     '2022-09-23 00:00:00',
     '2022-09-23 00:00:00'
   );

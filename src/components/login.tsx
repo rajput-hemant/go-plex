@@ -12,24 +12,43 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (email === "admin@example.com") {
-      setJwtToken("admin");
-      setAlert(null);
-      navigate("/");
-    } else {
+    try {
+      const response = await fetch("http://localhost:8080/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setAlert({
+          title: "Invalid Credentials",
+          variant: "destructive",
+          description: data.message,
+        });
+      } else {
+        setJwtToken(data.access_token);
+        setAlert(null);
+        navigate("/");
+      }
+    } catch (error) {
       setAlert({
-        title: "Invalid Credentials",
-        description: "Please try again.",
+        title: "Error",
         variant: "destructive",
+        description: (error as { message: string }).message,
       });
     }
   };
 
   return (
-    <div className="">
+    <>
       <h2 className="text-3xl font-medium">Login</h2>
 
       <hr className="mt-2" />
@@ -71,7 +90,7 @@ const Login = () => {
           Login
         </button>
       </form>
-    </div>
+    </>
   );
 };
 

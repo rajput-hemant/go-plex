@@ -45,7 +45,7 @@ func (j *Auth) GenerateTokenPair(user *JWTUser) (TokenPairs, error) {
 	claims["aud"] = j.Audience
 	claims["iss"] = j.Issuer
 	claims["iat"] = time.Now().UTC().Unix()
-	claims["type"] = "JWT"
+	claims["typ"] = "JWT"
 
 	// set the expiry for jwt token
 	claims["exp"] = time.Now().UTC().Add(j.TokenExpiry).Unix()
@@ -94,7 +94,7 @@ func (j *Auth) GetRefreshCookie(refreshToken string) *http.Cookie {
 		Secure:   true,
 	}
 }
-func (j *Auth) GetExpiredCookie() *http.Cookie {
+func (j *Auth) GetExpiredRefreshCookie() *http.Cookie {
 	return &http.Cookie{
 		Name:     j.CookieName,
 		Value:    "",

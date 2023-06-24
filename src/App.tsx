@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
@@ -15,9 +15,37 @@ function App() {
   const LoginLogoutEl = jwtToken ? "button" : Link;
 
   const logout = () => {
+    try {
+      fetch("http://localhost:8080/logout", {
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Error logging out!", error);
+    }
+
     setJwtToken(null);
     navigate("/login");
   };
+
+  useEffect(() => {
+    if (!jwtToken) {
+      (async () => {
+        try {
+          const response = await fetch("/refresh", {
+            credentials: "include",
+          });
+
+          const data = await response.json();
+
+          if (data?.access_token) {
+            setJwtToken(data.access_token);
+          }
+        } catch (error) {
+          console.error("User is not logged in!", error);
+        }
+      })();
+    }
+  }, [jwtToken]);
 
   return (
     <div className="container mx-auto">

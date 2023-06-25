@@ -16,9 +16,7 @@ function App() {
 
   const logout = () => {
     try {
-      fetch("http://localhost:8080/logout", {
-        credentials: "include",
-      });
+      fetch("/api/logout", { credentials: "include" });
     } catch (error) {
       console.error("Error logging out!", error);
     }
@@ -31,7 +29,7 @@ function App() {
     if (!jwtToken) {
       (async () => {
         try {
-          const response = await fetch("/refresh", {
+          const response = await fetch("/api/refresh", {
             credentials: "include",
           });
 

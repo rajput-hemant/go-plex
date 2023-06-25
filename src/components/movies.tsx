@@ -12,7 +12,7 @@ import {
 } from "@/components/ui";
 
 const getMovies = async () => {
-  const response = await fetch("http://localhost:8080/movies");
+  const response = await fetch("/api/movies");
   const data: Movie[] = await response.json();
 
   return data;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
@@ -12,6 +12,8 @@ function App() {
   const [jwtToken, setJwtToken] = useState<string | null>(null);
   const [alert, setAlert] = useState<AlertType | null>(null);
 
+  const [tickInterval, setTickInterval] = useState<NodeJS.Timer | null>(null);
+
   const LoginLogoutEl = jwtToken ? "button" : Link;
 
   const logout = () => {
@@ -22,28 +24,59 @@ function App() {
     }
 
     setJwtToken(null);
+    toggleRefresh(false);
     navigate("/login");
   };
 
+  const refresh = async () => {
+    try {
+      const response = await fetch("/api/refresh", {
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data?.access_token) {
+        setJwtToken(data.access_token);
+      }
+    } catch (error) {
+      // console.error("User is not logged in!", error);
+      // ...
+    }
+  };
+
+  const toggleRefresh = useCallback(
+    (status: boolean) => {
+      console.log("clicked");
+
+      if (status) {
+        console.log("turning on ticking");
+
+        const i = setInterval(() => {
+          refresh();
+        }, 600000); // 10 minutes
+
+        setTickInterval(i);
+        console.log("setting tick interval to: ", i);
+      } else {
+        console.log("turning off ticking");
+        console.log("turning off tick interval: ", tickInterval);
+
+        setTickInterval(null);
+        if (tickInterval) {
+          clearInterval(tickInterval);
+        }
+      }
+    },
+
+    [tickInterval]
+  );
+
   useEffect(() => {
     if (!jwtToken) {
-      (async () => {
-        try {
-          const response = await fetch("/api/refresh", {
-            credentials: "include",
-          });
-
-          const data = await response.json();
-
-          if (data?.access_token) {
-            setJwtToken(data.access_token);
-          }
-        } catch (error) {
-          console.error("User is not logged in!", error);
-        }
-      })();
+      refresh();
     }
-  }, [jwtToken]);
+  }, [jwtToken, toggleRefresh]);
 
   return (
     <div className="container mx-auto">
@@ -118,7 +151,9 @@ function App() {
             </Alert>
           )}
 
-          <Outlet context={{ jwtToken, setJwtToken, setAlert }} />
+          <Outlet
+            context={{ jwtToken, setJwtToken, setAlert, toggleRefresh }}
+          />
         </div>
       </div>
     </div>

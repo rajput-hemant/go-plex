@@ -8,7 +8,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { setJwtToken, setAlert }: OutletContext = useOutletContext();
+  const { setJwtToken, setAlert, toggleRefresh }: OutletContext =
+    useOutletContext();
 
   const navigate = useNavigate();
 
@@ -36,6 +37,7 @@ const Login = () => {
       } else {
         setJwtToken(data.access_token);
         setAlert(null);
+        toggleRefresh(true);
         navigate("/");
       }
     } catch (error) {

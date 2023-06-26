@@ -8,4 +8,5 @@ export type OutletContext = {
   jwtToken: string | null;
   setAlert: (alert: Alert | null) => void;
   setJwtToken: (jwtToken: string | null) => void;
+  toggleRefresh: (status: boolean) => void;
 };

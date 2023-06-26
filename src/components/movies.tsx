@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import useSwr from "swr";
 
 import { Movie } from "@/types/movie";
+import { formatDate } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -22,7 +23,7 @@ const Movies = () => {
   const { data: movies } = useSwr("/movies", getMovies);
 
   return (
-    <div className="">
+    <>
       <h2 className="text-3xl font-medium">Movies</h2>
 
       <hr className="mt-2" />
@@ -42,13 +43,13 @@ const Movies = () => {
               <TableCell>
                 <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
               </TableCell>
-              <TableCell>{movie.release_date}</TableCell>
+              <TableCell>{formatDate(movie.release_date)}</TableCell>
               <TableCell>{movie.mpaa_rating}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 };
 

@@ -140,3 +140,13 @@ func (app *application) logout(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusOK, "logged out")
 }
+
+func (app *application) MovieCatalog(w http.ResponseWriter, r *http.Request) {
+	movies, err := app.DB.AllMovies()
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	_ = app.writeJSON(w, http.StatusOK, movies)
+}

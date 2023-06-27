@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import { OutletContext } from "@/types/outlet-context";
-import { Input } from "./ui";
+import { Input, Label } from "./ui";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -59,9 +59,9 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="mx-auto mt-4 flex max-w-[40rem] flex-col gap-2"
       >
-        <label htmlFor="email" className="text-slate-600">
+        <Label htmlFor="email" className="text-slate-600">
           Email
-        </label>
+        </Label>
         <Input
           title="Email Address"
           name="email"
@@ -70,11 +70,10 @@ const Login = () => {
           placeholder="Enter your email address"
           onChange={(e) => setEmail(e.target.value)}
         />
-        <p></p>
 
-        <label htmlFor="password" className="text-slate-600">
+        <Label htmlFor="password" className="text-slate-600">
           Password
-        </label>
+        </Label>
         <Input
           title="Password"
           name="password"
@@ -83,7 +82,6 @@ const Login = () => {
           placeholder="Enter your password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <p></p>
 
         <button
           type="submit"

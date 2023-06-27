@@ -31,8 +31,6 @@ const ManageCatalouge = () => {
   });
 
   useEffect(() => {
-    console.log({ jwtToken });
-
     if (!jwtToken) {
       navigate("/login");
       return;

@@ -18,4 +18,4 @@ const Center = ({ absolutely, children }: CenterProps) => {
   );
 };
 
-export default Center;
+export { Center };

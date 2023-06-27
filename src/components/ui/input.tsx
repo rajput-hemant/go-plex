@@ -20,4 +20,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-export default Input;
+export { Input };

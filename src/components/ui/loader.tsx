@@ -8,4 +8,4 @@ const Loader = ({ iconSize = 30 }: { iconSize?: number }) => {
   );
 };
 
-export default Loader;
+export { Loader };

@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 
-import { Checkbox } from "./ui";
-
 const Home = () => {
   return (
     <div className="flex flex-col items-center">
@@ -12,8 +10,6 @@ const Home = () => {
       <Link to="/movies">
         <img src="/images/movie_tickets.jpg" alt="" />
       </Link>
-
-      <Checkbox id="terms" />
     </div>
   );
 };

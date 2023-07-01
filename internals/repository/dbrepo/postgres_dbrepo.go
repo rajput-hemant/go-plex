@@ -106,7 +106,7 @@ func (m *PostgresDBRepo) OneMovie(id int) (*models.Movie, error) {
 		SELECT
 			g.id, g.genre
 		FROM
-			movies_genres movies_genres
+			movies_genres mg
 		LEFT JOIN
 			genres g on (mg.genre_id = g.id)
 		WHERE
@@ -181,7 +181,7 @@ func (m *PostgresDBRepo) OneMovieForEdit(id int) (*models.Movie, []*models.Genre
 		SELECT
 			g.id, g.genre
 		FROM
-			movies_genres movies_genres
+			movies_genres mg
 		LEFT JOIN
 			genres g on (mg.genre_id = g.id)
 		WHERE
@@ -316,4 +316,44 @@ func (m *PostgresDBRepo) GetUserByID(id int) (*models.User, error) {
 	}
 
 	return &user, nil
+}
+
+func (m *PostgresDBRepo) AllGenres() ([]*models.Genre, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `
+		SELECT
+			id, genre, created_at, updated_at
+		FROM
+			genres
+		ORDER BY
+			genre
+	`
+
+	rows, err := m.DB.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var genres []*models.Genre
+
+	for rows.Next() {
+		var g models.Genre
+
+		err := rows.Scan(
+			&g.ID,
+			&g.GenreName,
+			&g.CreatedAt,
+			&g.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		genres = append(genres, &g)
+	}
+
+	return genres, nil
 }

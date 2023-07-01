@@ -1,3 +1,4 @@
+import { LinkIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import useSwr from "swr";
 
@@ -11,16 +12,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui";
+import ErrorPage from "./error";
 
 const getMovies = async () => {
-  const response = await fetch("/api/movies");
-  const data: Movie[] = await response.json();
+  try {
+    const response = await fetch("/api/movies");
+    const data: Movie[] = await response.json();
 
-  return data;
+    return data;
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 };
 
 const Movies = () => {
-  const { data: movies } = useSwr("/movies", getMovies);
+  const { data: movies, error } = useSwr("/movies", getMovies);
+
+  if (error) {
+    return <ErrorPage errorMessage={error.message} />;
+  }
 
   return (
     <>
@@ -41,7 +51,13 @@ const Movies = () => {
           {movies?.map((movie) => (
             <TableRow key={movie.id}>
               <TableCell>
-                <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+                <Link
+                  to={`/movies/${movie.id}`}
+                  className="flex items-center underline-offset-2 hover:underline"
+                >
+                  {movie.title}
+                  <LinkIcon className="ml-1 h-3 w-3 text-zinc-700" />
+                </Link>
               </TableCell>
               <TableCell>{formatDate(movie.release_date)}</TableCell>
               <TableCell>{movie.mpaa_rating}</TableCell>

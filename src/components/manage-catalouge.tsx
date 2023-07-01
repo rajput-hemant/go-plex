@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { LinkIcon } from "lucide-react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import useSwr from "swr";
 
@@ -58,7 +59,13 @@ const ManageCatalouge = () => {
           {movies?.map((movie) => (
             <TableRow key={movie.id}>
               <TableCell>
-                <Link to={`/admin/movies/${movie.id}`}>{movie.title}</Link>
+                <Link
+                  to={`/admin/movies/${movie.id}`}
+                  className="flex items-center underline-offset-2 hover:underline"
+                >
+                  {movie.title}
+                  <LinkIcon className="ml-1 h-3 w-3 text-zinc-700" />
+                </Link>{" "}
               </TableCell>
               <TableCell>{formatDate(movie.release_date)}</TableCell>
               <TableCell>{movie.mpaa_rating}</TableCell>

@@ -1,8 +1,17 @@
 export type Movie = {
   id: number;
   title: string;
-  release_date: string;
-  runtime: number;
-  mpaa_rating: string;
   description: string;
+  release_date: string;
+  mpaa_rating: string;
+  runtime: number;
+  image: string;
+  genres?: Genre[];
+  genreIds?: number[];
+};
+
+export type Genre = {
+  id: number;
+  name: string;
+  checked: boolean;
 };

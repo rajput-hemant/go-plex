@@ -1,4 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "./alert";
+import { Badge } from "./badge";
 import { Center } from "./center";
 import { Checkbox } from "./checkbox";
 import { Input } from "./input";
@@ -28,6 +29,7 @@ export {
   Alert,
   AlertDescription,
   AlertTitle,
+  Badge,
   Center,
   Checkbox,
   Input,

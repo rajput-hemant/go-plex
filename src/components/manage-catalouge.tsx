@@ -60,7 +60,7 @@ const ManageCatalouge = () => {
             <TableRow key={movie.id}>
               <TableCell>
                 <Link
-                  to={`/admin/movies/${movie.id}`}
+                  to={`/admin/movie/${movie.id}`}
                   className="flex items-center underline-offset-2 hover:underline"
                 >
                   {movie.title}

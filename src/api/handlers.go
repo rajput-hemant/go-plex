@@ -244,3 +244,47 @@ func (app *application) InsertMovie(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJSON(w, http.StatusCreated, resp)
 }
+
+func (app *application) UpdateMovie(w http.ResponseWriter, r *http.Request) {
+	var payload models.Movie
+
+	err := app.readJSON(w, r, &payload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	movie, err := app.DB.OneMovie(payload.ID)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	movie.Title = payload.Title
+	movie.Description = payload.Description
+	movie.ReleaseDate = payload.ReleaseDate
+	movie.Runtime = payload.Runtime
+	movie.MPAARating = payload.MPAARating
+	movie.UpdatedAt = time.Now()
+
+	// update the movie
+	err = app.DB.UpdateMovie(*movie)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	// handle genres
+	err = app.DB.UpdateMovieGenres(movie.ID, payload.GenreIds)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	resp := JSONResponse{
+		Error:   false,
+		Message: "Movie updated successfully",
+	}
+
+	app.writeJSON(w, http.StatusOK, resp)
+}

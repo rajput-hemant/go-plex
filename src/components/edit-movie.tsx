@@ -4,6 +4,7 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Genre, Movie } from "@/types/movie";
 import { OutletContext } from "@/types/outlet-context";
 import { cn } from "@/lib/utils";
+import ErrorPage from "./error";
 import {
   Badge,
   Checkbox,
@@ -41,7 +42,7 @@ const EditMovie = () => {
   const navigate = useNavigate();
   const { jwtToken }: OutletContext = useOutletContext();
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<ErrorType[]>([]);
   const [movie, setMovie] = useState<Movie>({
     id: 0,
@@ -93,7 +94,41 @@ const EditMovie = () => {
         }));
       });
     } else {
-      // ...
+      (async () => {
+        try {
+          const response = await fetch(`/api/admin/movies/${id}`, {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Invalid response code" + response.status);
+          }
+
+          const data: { movie: Movie; genres: Genre[] } = await response.json();
+
+          const genres: Genre[] = [];
+          data.genres?.forEach((g) => {
+            genres.push({
+              id: g.id,
+              name: g.name,
+              checked:
+                data.movie.genre_ids?.indexOf(g.id) !== -1 ? true : false,
+            });
+          });
+
+          setMovie({
+            ...data.movie,
+            release_date: new Date(data.movie.release_date)
+              .toISOString()
+              .split("T")[0],
+            genres: genres,
+          });
+        } catch (error) {
+          setError((error as Error).message);
+        }
+      })();
     }
   }, [id, jwtToken, navigate]);
 
@@ -198,6 +233,10 @@ const EditMovie = () => {
     });
   };
 
+  if (error !== null) {
+    return <ErrorPage errorMessage={error} />;
+  }
+
   return (
     <>
       <h2 className="text-3xl font-medium">Edit Movie</h2>
@@ -263,7 +302,7 @@ const EditMovie = () => {
 
         <Label>
           MPAA Rating
-          <Select onValueChange={handleChange}>
+          <Select value={movie.mpaa_rating} onValueChange={handleChange}>
             <SelectTrigger
               className={cn(hasError("mpaa_rating") && "border-red-500")}
             >

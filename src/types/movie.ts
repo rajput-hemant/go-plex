@@ -4,10 +4,10 @@ export type Movie = {
   description: string;
   release_date: string;
   mpaa_rating: string;
-  runtime: number;
+  runtime: string;
   image: string;
   genres?: Genre[];
-  genreIds?: number[];
+  genre_ids?: number[];
 };
 
 export type Genre = {

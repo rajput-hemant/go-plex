@@ -50,9 +50,9 @@ const EditMovie = () => {
     release_date: "",
     mpaa_rating: "",
     image: "",
-    runtime: 0,
+    runtime: "",
     genres: [],
-    genreIds: Array(13).fill(0),
+    genre_ids: Array(13).fill(0),
   });
 
   const { id } = useParams();
@@ -71,9 +71,9 @@ const EditMovie = () => {
         release_date: "",
         mpaa_rating: "",
         image: "",
-        runtime: 0,
+        runtime: "",
         genres: [],
-        genreIds: Array(13).fill(0),
+        genre_ids: Array(13).fill(0),
       });
 
       fetchGenres().then((data) => {
@@ -89,7 +89,7 @@ const EditMovie = () => {
         setMovie((m) => ({
           ...m,
           genres: genres,
-          genreIds: [],
+          genre_ids: [],
         }));
       });
     } else {
@@ -131,13 +131,39 @@ const EditMovie = () => {
     validate("mpaa_rating");
     validate("description");
 
-    if (movie.genreIds?.length === 0) {
+    if (movie.genre_ids?.length === 0) {
       errors.push("genres");
     }
 
     if (errors.length > 0) {
       setErrors(errors);
       return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/movies/${movie.id}`, {
+        method: movie.id === 0 ? "PUT" : "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtToken}`,
+          credentials: "include",
+        },
+        body: JSON.stringify({
+          ...movie,
+          release_date: new Date(movie.release_date),
+          runtime: parseInt(movie.runtime),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        navigate("/manage-catalogue");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -156,19 +182,19 @@ const EditMovie = () => {
 
   const handleCheck = (e: boolean, i: number) => {
     const tempGenres = movie.genres ?? [];
-    const tempGenreIds = movie.genreIds ?? [];
+    const tempGenre_ids = movie.genre_ids ?? [];
 
     tempGenres[i].checked = !tempGenres[i].checked;
 
     if (!e) {
-      tempGenreIds.splice(tempGenreIds.indexOf(i));
+      tempGenre_ids.splice(tempGenre_ids.indexOf(i));
     } else {
-      tempGenreIds.push(i);
+      tempGenre_ids.push(i);
     }
 
     setMovie({
       ...movie,
-      genreIds: tempGenreIds,
+      genre_ids: tempGenre_ids,
     });
   };
 
@@ -312,8 +338,7 @@ const EditMovie = () => {
         <div className="mt-4">
           <button
             type="submit"
-            disabled={errors.length > 0}
-            className="rounded-3xl bg-green-500 px-5 py-2 font-semibold text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="rounded-3xl bg-green-500 px-5 py-2 font-semibold text-white hover:bg-green-600"
           >
             Save
           </button>

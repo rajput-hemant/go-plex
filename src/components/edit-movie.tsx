@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import { AlertCircle } from "lucide-react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 import { Genre, Movie } from "@/types/movie";
@@ -6,6 +7,15 @@ import { OutletContext } from "@/types/outlet-context";
 import { cn } from "@/lib/utils";
 import ErrorPage from "./error";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Badge,
   Checkbox,
   Input,
@@ -233,6 +243,27 @@ const EditMovie = () => {
     });
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/admin/movies/${movie.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        navigate("/manage-catalogue");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (error !== null) {
     return <ErrorPage errorMessage={error} />;
   }
@@ -381,6 +412,39 @@ const EditMovie = () => {
           >
             Save
           </button>
+
+          {/* delete button */}
+          {movie.id > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger className="ml-4 rounded-3xl bg-red-500 px-5 py-2 font-semibold text-white hover:bg-red-600">
+                Delete
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertCircle className="mx-auto mb-4 h-20 w-20 text-red-500" />
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    the movie from the database.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="bg-blue-500 hover:bg-blue-600">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-red-500 hover:bg-red-600"
+                  >
+                    Yes, delete it!
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </form>
     </>

@@ -1,4 +1,15 @@
 import { Alert, AlertDescription, AlertTitle } from "./alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./alert-dialog";
 import { Badge } from "./badge";
 import { Center } from "./center";
 import { Checkbox } from "./checkbox";
@@ -29,6 +40,15 @@ export {
   Alert,
   AlertDescription,
   AlertTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Badge,
   Center,
   Checkbox,

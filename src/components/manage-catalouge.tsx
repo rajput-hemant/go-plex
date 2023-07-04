@@ -1,19 +1,10 @@
 import { useEffect } from "react";
-import { LinkIcon } from "lucide-react";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import useSwr from "swr";
 
 import { Movie } from "@/types/movie";
 import { OutletContext } from "@/types/outlet-context";
-import { formatDate } from "@/lib/utils";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui";
+import MoviesTable from "./movies-table";
 
 const getMovies = async (token: string) => {
   const response = await fetch("/api/admin/movies", {
@@ -46,33 +37,7 @@ const ManageCatalouge = () => {
 
       <hr className="mt-2" />
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Movie</TableHead>
-            <TableHead>Release Date</TableHead>
-            <TableHead>Rating</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {movies?.map((movie) => (
-            <TableRow key={movie.id}>
-              <TableCell>
-                <Link
-                  to={`/admin/movie/${movie.id}`}
-                  className="flex items-center underline-offset-2 hover:underline"
-                >
-                  {movie.title}
-                  <LinkIcon className="ml-1 h-3 w-3 text-zinc-700" />
-                </Link>{" "}
-              </TableCell>
-              <TableCell>{formatDate(movie.release_date)}</TableCell>
-              <TableCell>{movie.mpaa_rating}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {movies && <MoviesTable movies={movies} />}
     </>
   );
 };

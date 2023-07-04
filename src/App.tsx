@@ -99,7 +99,7 @@ function App() {
 
       <div className="flex">
         <div className="w-1/4">
-          <nav className="flex flex-col rounded-md border-2 font-medium  ">
+          <nav className="flex flex-col rounded-md border-2 font-medium">
             <Link to="/" className="border-b px-4 py-2 hover:bg-gray-100">
               Home
             </Link>

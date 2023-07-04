@@ -3,6 +3,7 @@ package dbrepo
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"go-plex/internals/models"
 	"time"
 )
@@ -17,21 +18,38 @@ func (m *PostgresDBRepo) Connection() *sql.DB {
 	return m.DB
 }
 
-func (m *PostgresDBRepo) AllMovies() ([]*models.Movie, error) {
+func (m *PostgresDBRepo) AllMovies(genre ...int) ([]*models.Movie, error) {
 	// this will cancel everything if user is not finished interacting with the db within 3 seconds
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `
-		SELECT 
+	where := ""
+	if len(genre) > 0 {
+		where = fmt.Sprintf("WHERE id IN (SELECT movie_id FROM movies_genres WHERE genre_id = %d)", genre[0])
+	}
+
+	// query := `
+	// 	SELECT
+	// 		id, title, release_date, runtime,
+	// 		mpaa_rating, description, coalesce(image, ''),
+	// 		created_at, updated_at
+	// 	FROM
+	// 		movies
+	// 	ORDER BY
+	// 		title
+	// `
+
+	query := fmt.Sprintf(`
+		SELECT
 			id, title, release_date, runtime,
 			mpaa_rating, description, coalesce(image, ''),
 			created_at, updated_at
 		FROM
 			movies
+		%s
 		ORDER BY
 			title
-	`
+	`, where)
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
